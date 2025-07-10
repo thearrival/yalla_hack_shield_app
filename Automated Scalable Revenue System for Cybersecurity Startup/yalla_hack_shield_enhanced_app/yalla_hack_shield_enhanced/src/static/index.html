@@ -1,0 +1,714 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Yalla-Hack Shield - Advanced Cybersecurity Platform</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #0A2342 0%, #1B4F72 50%, #2CA58D 100%);
+            min-height: 100vh;
+            overflow-x: hidden;
+            position: relative;
+        }
+
+        /* Floating cybersecurity icons background */
+        .floating-icons {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 1;
+        }
+
+        .floating-icon {
+            position: absolute;
+            color: rgba(44, 165, 141, 0.1);
+            font-size: 2rem;
+            animation: float 6s ease-in-out infinite;
+        }
+
+        .floating-icon:nth-child(1) { top: 10%; left: 10%; animation-delay: 0s; }
+        .floating-icon:nth-child(2) { top: 20%; left: 80%; animation-delay: 1s; }
+        .floating-icon:nth-child(3) { top: 40%; left: 15%; animation-delay: 2s; }
+        .floating-icon:nth-child(4) { top: 60%; left: 85%; animation-delay: 3s; }
+        .floating-icon:nth-child(5) { top: 80%; left: 20%; animation-delay: 4s; }
+        .floating-icon:nth-child(6) { top: 30%; left: 70%; animation-delay: 5s; }
+        .floating-icon:nth-child(7) { top: 70%; left: 60%; animation-delay: 1.5s; }
+        .floating-icon:nth-child(8) { top: 15%; left: 45%; animation-delay: 2.5s; }
+        .floating-icon:nth-child(9) { top: 85%; left: 75%; animation-delay: 3.5s; }
+        .floating-icon:nth-child(10) { top: 50%; left: 5%; animation-delay: 4.5s; }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0px) rotate(0deg); }
+            50% { transform: translateY(-20px) rotate(180deg); }
+        }
+
+        /* Main container */
+        .container {
+            position: relative;
+            z-index: 10;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        /* Login card */
+        .login-card {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 20px;
+            padding: 40px;
+            width: 100%;
+            max-width: 450px;
+            box-shadow: 0 25px 50px rgba(0, 0, 0, 0.3);
+            transition: transform 0.3s ease;
+        }
+
+        .login-card:hover {
+            transform: translateY(-5px);
+        }
+
+        /* Logo and branding */
+        .logo-container {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .logo {
+            width: 80px;
+            height: 80px;
+            margin-bottom: 15px;
+            border-radius: 50%;
+            box-shadow: 0 10px 30px rgba(44, 165, 141, 0.3);
+        }
+
+        .brand-title {
+            color: #ffffff;
+            font-size: 2rem;
+            font-weight: 700;
+            margin-bottom: 5px;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+        }
+
+        .brand-subtitle {
+            color: #2CA58D;
+            font-size: 1rem;
+            font-weight: 400;
+            margin-bottom: 10px;
+        }
+
+        .tagline {
+            color: rgba(255, 255, 255, 0.8);
+            font-size: 0.9rem;
+            font-style: italic;
+        }
+
+        /* Form styles */
+        .form-group {
+            margin-bottom: 25px;
+            position: relative;
+        }
+
+        .form-label {
+            display: block;
+            color: #ffffff;
+            font-weight: 600;
+            margin-bottom: 8px;
+            font-size: 0.9rem;
+        }
+
+        .form-input {
+            width: 100%;
+            padding: 15px 20px;
+            background: rgba(255, 255, 255, 0.1);
+            border: 2px solid rgba(255, 255, 255, 0.2);
+            border-radius: 12px;
+            color: #ffffff;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+            backdrop-filter: blur(10px);
+        }
+
+        .form-input:focus {
+            outline: none;
+            border-color: #2CA58D;
+            background: rgba(255, 255, 255, 0.15);
+            box-shadow: 0 0 20px rgba(44, 165, 141, 0.3);
+        }
+
+        .form-input::placeholder {
+            color: rgba(255, 255, 255, 0.6);
+        }
+
+        .password-container {
+            position: relative;
+        }
+
+        .password-toggle {
+            position: absolute;
+            right: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: rgba(255, 255, 255, 0.7);
+            cursor: pointer;
+            transition: color 0.3s ease;
+        }
+
+        .password-toggle:hover {
+            color: #2CA58D;
+        }
+
+        /* Button styles */
+        .btn-primary {
+            width: 100%;
+            padding: 15px;
+            background: linear-gradient(135deg, #2CA58D 0%, #1B4F72 100%);
+            border: none;
+            border-radius: 12px;
+            color: #ffffff;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(44, 165, 141, 0.4);
+        }
+
+        .btn-primary:active {
+            transform: translateY(0);
+        }
+
+        .btn-primary:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
+
+        /* Loading spinner */
+        .loading-spinner {
+            display: none;
+            width: 20px;
+            height: 20px;
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            border-radius: 50%;
+            border-top-color: #ffffff;
+            animation: spin 1s ease-in-out infinite;
+            margin-right: 10px;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        /* Alert messages */
+        .alert {
+            padding: 12px 16px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            font-size: 0.9rem;
+            display: none;
+        }
+
+        .alert-error {
+            background: rgba(231, 76, 60, 0.2);
+            border: 1px solid rgba(231, 76, 60, 0.3);
+            color: #ff6b6b;
+        }
+
+        .alert-success {
+            background: rgba(46, 204, 113, 0.2);
+            border: 1px solid rgba(46, 204, 113, 0.3);
+            color: #2ecc71;
+        }
+
+        /* Features section */
+        .features {
+            margin-top: 30px;
+            text-align: center;
+        }
+
+        .features-title {
+            color: #ffffff;
+            font-size: 1.1rem;
+            font-weight: 600;
+            margin-bottom: 15px;
+        }
+
+        .feature-list {
+            display: flex;
+            justify-content: space-around;
+            flex-wrap: wrap;
+            gap: 15px;
+        }
+
+        .feature-item {
+            color: rgba(255, 255, 255, 0.8);
+            font-size: 0.8rem;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .feature-icon {
+            color: #2CA58D;
+            font-size: 1rem;
+        }
+
+        /* Admin credentials display */
+        .admin-info {
+            background: rgba(44, 165, 141, 0.1);
+            border: 1px solid rgba(44, 165, 141, 0.3);
+            border-radius: 10px;
+            padding: 15px;
+            margin-top: 20px;
+            text-align: center;
+        }
+
+        .admin-info h4 {
+            color: #2CA58D;
+            font-size: 0.9rem;
+            margin-bottom: 8px;
+        }
+
+        .admin-info p {
+            color: rgba(255, 255, 255, 0.9);
+            font-size: 0.8rem;
+            margin: 2px 0;
+        }
+
+        /* Responsive design */
+        @media (max-width: 768px) {
+            .login-card {
+                padding: 30px 20px;
+                margin: 10px;
+            }
+
+            .brand-title {
+                font-size: 1.8rem;
+            }
+
+            .floating-icon {
+                font-size: 1.5rem;
+            }
+        }
+
+        /* Registration modal */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            backdrop-filter: blur(5px);
+        }
+
+        .modal-content {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 20px;
+            margin: 5% auto;
+            padding: 30px;
+            width: 90%;
+            max-width: 500px;
+            max-height: 80vh;
+            overflow-y: auto;
+        }
+
+        .close {
+            color: #aaa;
+            float: right;
+            font-size: 28px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        .close:hover {
+            color: #2CA58D;
+        }
+
+        .modal h2 {
+            color: #ffffff;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        .form-row {
+            display: flex;
+            gap: 15px;
+        }
+
+        .form-row .form-group {
+            flex: 1;
+        }
+    </style>
+</head>
+<body>
+    <!-- Floating cybersecurity icons -->
+    <div class="floating-icons">
+        <i class="floating-icon fas fa-shield-alt"></i>
+        <i class="floating-icon fas fa-lock"></i>
+        <i class="floating-icon fas fa-terminal"></i>
+        <i class="floating-icon fas fa-bug"></i>
+        <i class="floating-icon fas fa-key"></i>
+        <i class="floating-icon fas fa-eye"></i>
+        <i class="floating-icon fas fa-server"></i>
+        <i class="floating-icon fas fa-network-wired"></i>
+        <i class="floating-icon fas fa-fingerprint"></i>
+        <i class="floating-icon fas fa-user-secret"></i>
+    </div>
+
+    <div class="container">
+        <div class="login-card">
+            <!-- Logo and branding -->
+            <div class="logo-container">
+                <img src="YallaHacklogo.png" alt="Yalla-Hack Logo" class="logo">
+                <h1 class="brand-title">Yalla-Hack Shield</h1>
+                <p class="brand-subtitle">Advanced Cybersecurity Platform</p>
+                <p class="tagline">Protecting your digital world, one endpoint at a time</p>
+            </div>
+
+            <!-- Alert messages -->
+            <div id="alert" class="alert"></div>
+
+            <!-- Login form -->
+            <form id="loginForm">
+                <div class="form-group">
+                    <label for="username" class="form-label">Username or Email</label>
+                    <input type="text" id="username" name="username" class="form-input" placeholder="Enter your username or email" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="password" class="form-label">Password</label>
+                    <div class="password-container">
+                        <input type="password" id="password" name="password" class="form-input" placeholder="Enter your password" required>
+                        <i class="password-toggle fas fa-eye" onclick="togglePassword()"></i>
+                    </div>
+                </div>
+
+                <button type="submit" class="btn-primary" id="loginBtn">
+                    <span class="loading-spinner" id="loadingSpinner"></span>
+                    <span id="loginBtnText">Sign In to Shield</span>
+                </button>
+            </form>
+
+            <!-- Registration link -->
+            <div style="text-align: center; margin-top: 20px;">
+                <p style="color: rgba(255, 255, 255, 0.8); font-size: 0.9rem;">
+                    Don't have an account? 
+                    <a href="#" onclick="openRegistrationModal()" style="color: #2CA58D; text-decoration: none; font-weight: 600;">Create Account</a>
+                </p>
+            </div>
+
+            <!-- Features section -->
+            <div class="features">
+                <h3 class="features-title">Key Features</h3>
+                <div class="feature-list">
+                    <div class="feature-item">
+                        <i class="feature-icon fas fa-shield-alt"></i>
+                        <span>Real-time Protection</span>
+                    </div>
+                    <div class="feature-item">
+                        <i class="feature-icon fas fa-cogs"></i>
+                        <span>Expert Management</span>
+                    </div>
+                    <div class="feature-item">
+                        <i class="feature-icon fas fa-expand-arrows-alt"></i>
+                        <span>Scalable Solutions</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Admin credentials -->
+            <div class="admin-info">
+                <h4><i class="fas fa-user-shield"></i> Demo Admin Access</h4>
+                <p><strong>Username:</strong> admin</p>
+                <p><strong>Password:</strong> YallaHack2025!</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Registration Modal -->
+    <div id="registrationModal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeRegistrationModal()">&times;</span>
+            <h2><i class="fas fa-user-plus"></i> Create Your Account</h2>
+            
+            <div id="regAlert" class="alert"></div>
+            
+            <form id="registrationForm">
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="regFirstName" class="form-label">First Name</label>
+                        <input type="text" id="regFirstName" name="first_name" class="form-input" placeholder="First name" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="regLastName" class="form-label">Last Name</label>
+                        <input type="text" id="regLastName" name="last_name" class="form-input" placeholder="Last name" required>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="regUsername" class="form-label">Username</label>
+                    <input type="text" id="regUsername" name="username" class="form-input" placeholder="Choose a username" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="regEmail" class="form-label">Email Address</label>
+                    <input type="email" id="regEmail" name="email" class="form-input" placeholder="your@email.com" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="regCompany" class="form-label">Company Name (Optional)</label>
+                    <input type="text" id="regCompany" name="company_name" class="form-input" placeholder="Your company name">
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="regPhone" class="form-label">Phone (Optional)</label>
+                        <input type="tel" id="regPhone" name="phone" class="form-input" placeholder="+1234567890">
+                    </div>
+                    <div class="form-group">
+                        <label for="regCountry" class="form-label">Country (Optional)</label>
+                        <input type="text" id="regCountry" name="country" class="form-input" placeholder="Your country">
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="regPassword" class="form-label">Password</label>
+                    <div class="password-container">
+                        <input type="password" id="regPassword" name="password" class="form-input" placeholder="Create a strong password" required>
+                        <i class="password-toggle fas fa-eye" onclick="toggleRegPassword()"></i>
+                    </div>
+                    <small style="color: rgba(255, 255, 255, 0.7); font-size: 0.8rem;">
+                        Password must be at least 8 characters with uppercase, lowercase, and numbers
+                    </small>
+                </div>
+
+                <button type="submit" class="btn-primary" id="registerBtn">
+                    <span class="loading-spinner" id="regLoadingSpinner"></span>
+                    <span id="registerBtnText">Create Account</span>
+                </button>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        // Global variables
+        let isLoading = false;
+
+        // Password toggle functions
+        function togglePassword() {
+            const passwordInput = document.getElementById('password');
+            const toggleIcon = document.querySelector('.password-toggle');
+            
+            if (passwordInput.type === 'password') {
+                passwordInput.type = 'text';
+                toggleIcon.classList.remove('fa-eye');
+                toggleIcon.classList.add('fa-eye-slash');
+            } else {
+                passwordInput.type = 'password';
+                toggleIcon.classList.remove('fa-eye-slash');
+                toggleIcon.classList.add('fa-eye');
+            }
+        }
+
+        function toggleRegPassword() {
+            const passwordInput = document.getElementById('regPassword');
+            const toggleIcon = document.querySelector('#registrationModal .password-toggle');
+            
+            if (passwordInput.type === 'password') {
+                passwordInput.type = 'text';
+                toggleIcon.classList.remove('fa-eye');
+                toggleIcon.classList.add('fa-eye-slash');
+            } else {
+                passwordInput.type = 'password';
+                toggleIcon.classList.remove('fa-eye-slash');
+                toggleIcon.classList.add('fa-eye');
+            }
+        }
+
+        // Alert functions
+        function showAlert(message, type = 'error', alertId = 'alert') {
+            const alert = document.getElementById(alertId);
+            alert.className = `alert alert-${type}`;
+            alert.textContent = message;
+            alert.style.display = 'block';
+            
+            setTimeout(() => {
+                alert.style.display = 'none';
+            }, 5000);
+        }
+
+        function hideAlert(alertId = 'alert') {
+            document.getElementById(alertId).style.display = 'none';
+        }
+
+        // Loading state functions
+        function setLoading(isLoadingState, buttonId, spinnerId, textId) {
+            isLoading = isLoadingState;
+            const button = document.getElementById(buttonId);
+            const spinner = document.getElementById(spinnerId);
+            const text = document.getElementById(textId);
+            
+            button.disabled = isLoadingState;
+            spinner.style.display = isLoadingState ? 'inline-block' : 'none';
+            
+            if (isLoadingState) {
+                text.textContent = 'Processing...';
+            } else {
+                text.textContent = buttonId === 'loginBtn' ? 'Sign In to Shield' : 'Create Account';
+            }
+        }
+
+        // Modal functions
+        function openRegistrationModal() {
+            document.getElementById('registrationModal').style.display = 'block';
+            hideAlert('regAlert');
+        }
+
+        function closeRegistrationModal() {
+            document.getElementById('registrationModal').style.display = 'none';
+            document.getElementById('registrationForm').reset();
+            hideAlert('regAlert');
+        }
+
+        // API functions
+        async function makeRequest(url, method, data = null) {
+            const options = {
+                method: method,
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                credentials: 'include'
+            };
+            
+            if (data) {
+                options.body = JSON.stringify(data);
+            }
+            
+            try {
+                const response = await fetch(url, options);
+                const result = await response.json();
+                
+                if (!response.ok) {
+                    throw new Error(result.error || 'An error occurred');
+                }
+                
+                return result;
+            } catch (error) {
+                throw error;
+            }
+        }
+
+        // Login form handler
+        document.getElementById('loginForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            if (isLoading) return;
+            
+            hideAlert();
+            setLoading(true, 'loginBtn', 'loadingSpinner', 'loginBtnText');
+            
+            const formData = new FormData(e.target);
+            const loginData = {
+                username: formData.get('username'),
+                password: formData.get('password')
+            };
+            
+            try {
+                const result = await makeRequest('/api/auth/login', 'POST', loginData);
+                showAlert('Login successful! Redirecting...', 'success');
+                
+                setTimeout(() => {
+                    window.location.href = '/dashboard.html';
+                }, 1500);
+                
+            } catch (error) {
+                showAlert(error.message);
+            } finally {
+                setLoading(false, 'loginBtn', 'loadingSpinner', 'loginBtnText');
+            }
+        });
+
+        // Registration form handler
+        document.getElementById('registrationForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            if (isLoading) return;
+            
+            hideAlert('regAlert');
+            setLoading(true, 'registerBtn', 'regLoadingSpinner', 'registerBtnText');
+            
+            const formData = new FormData(e.target);
+            const registrationData = {
+                username: formData.get('username'),
+                email: formData.get('email'),
+                password: formData.get('password'),
+                first_name: formData.get('first_name'),
+                last_name: formData.get('last_name'),
+                company_name: formData.get('company_name'),
+                phone: formData.get('phone'),
+                country: formData.get('country')
+            };
+            
+            try {
+                const result = await makeRequest('/api/auth/register', 'POST', registrationData);
+                showAlert('Account created successfully! You can now login.', 'success', 'regAlert');
+                
+                setTimeout(() => {
+                    closeRegistrationModal();
+                    document.getElementById('username').value = registrationData.username;
+                }, 2000);
+                
+            } catch (error) {
+                showAlert(error.message, 'error', 'regAlert');
+            } finally {
+                setLoading(false, 'registerBtn', 'regLoadingSpinner', 'registerBtnText');
+            }
+        });
+
+        // Close modal when clicking outside
+        window.onclick = function(event) {
+            const modal = document.getElementById('registrationModal');
+            if (event.target === modal) {
+                closeRegistrationModal();
+            }
+        }
+
+        // Check if user is already logged in
+        window.addEventListener('load', async () => {
+            try {
+                const result = await makeRequest('/api/auth/session', 'GET');
+                if (result.authenticated) {
+                    window.location.href = '/dashboard.html';
+                }
+            } catch (error) {
+                // User not logged in, stay on login page
+            }
+        });
+    </script>
+</body>
+</html>
+

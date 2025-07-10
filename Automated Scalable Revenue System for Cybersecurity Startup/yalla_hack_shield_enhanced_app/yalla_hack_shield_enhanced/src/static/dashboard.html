@@ -1,0 +1,1505 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Yalla-Hack Shield Dashboard</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #0A2342 0%, #1B4F72 50%, #2CA58D 100%);
+            min-height: 100vh;
+            color: #ffffff;
+        }
+
+        /* Sidebar */
+        .sidebar {
+            position: fixed;
+            left: 0;
+            top: 0;
+            width: 280px;
+            height: 100vh;
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(20px);
+            border-right: 1px solid rgba(255, 255, 255, 0.2);
+            padding: 20px;
+            z-index: 1000;
+            transition: transform 0.3s ease;
+        }
+
+        .sidebar.collapsed {
+            transform: translateX(-280px);
+        }
+
+        .logo-section {
+            display: flex;
+            align-items: center;
+            margin-bottom: 30px;
+            padding-bottom: 20px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .logo-section img {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            margin-right: 12px;
+        }
+
+        .logo-text {
+            font-size: 1.2rem;
+            font-weight: 700;
+            color: #ffffff;
+        }
+
+        .nav-menu {
+            list-style: none;
+        }
+
+        .nav-item {
+            margin-bottom: 8px;
+        }
+
+        .nav-link {
+            display: flex;
+            align-items: center;
+            padding: 12px 16px;
+            color: rgba(255, 255, 255, 0.8);
+            text-decoration: none;
+            border-radius: 10px;
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+
+        .nav-link:hover, .nav-link.active {
+            background: rgba(44, 165, 141, 0.2);
+            color: #2CA58D;
+            transform: translateX(5px);
+        }
+
+        .nav-link i {
+            width: 20px;
+            margin-right: 12px;
+            text-align: center;
+        }
+
+        .user-info {
+            position: absolute;
+            bottom: 20px;
+            left: 20px;
+            right: 20px;
+            padding: 15px;
+            background: rgba(44, 165, 141, 0.1);
+            border-radius: 10px;
+            border: 1px solid rgba(44, 165, 141, 0.3);
+        }
+
+        .user-info h4 {
+            font-size: 0.9rem;
+            margin-bottom: 5px;
+            color: #2CA58D;
+        }
+
+        .user-info p {
+            font-size: 0.8rem;
+            color: rgba(255, 255, 255, 0.7);
+            margin: 2px 0;
+        }
+
+        /* Main content */
+        .main-content {
+            margin-left: 280px;
+            padding: 20px;
+            transition: margin-left 0.3s ease;
+        }
+
+        .main-content.expanded {
+            margin-left: 0;
+        }
+
+        /* Header */
+        .header {
+            display: flex;
+            justify-content: between;
+            align-items: center;
+            margin-bottom: 30px;
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(20px);
+            border-radius: 15px;
+            padding: 20px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .header-left {
+            flex: 1;
+        }
+
+        .header-title {
+            font-size: 2rem;
+            font-weight: 700;
+            margin-bottom: 5px;
+        }
+
+        .header-subtitle {
+            color: rgba(255, 255, 255, 0.7);
+            font-size: 1rem;
+        }
+
+        .header-right {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .menu-toggle {
+            background: none;
+            border: none;
+            color: #ffffff;
+            font-size: 1.5rem;
+            cursor: pointer;
+            padding: 10px;
+            border-radius: 8px;
+            transition: background 0.3s ease;
+        }
+
+        .menu-toggle:hover {
+            background: rgba(255, 255, 255, 0.1);
+        }
+
+        .logout-btn {
+            background: linear-gradient(135deg, #e74c3c, #c0392b);
+            border: none;
+            color: #ffffff;
+            padding: 10px 20px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 0.9rem;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+
+        .logout-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(231, 76, 60, 0.4);
+        }
+
+        /* Content sections */
+        .content-section {
+            display: none;
+        }
+
+        .content-section.active {
+            display: block;
+        }
+
+        /* Dashboard cards */
+        .dashboard-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .dashboard-card {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 15px;
+            padding: 25px;
+            transition: transform 0.3s ease;
+        }
+
+        .dashboard-card:hover {
+            transform: translateY(-5px);
+        }
+
+        .card-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+
+        .card-icon {
+            width: 50px;
+            height: 50px;
+            background: linear-gradient(135deg, #2CA58D, #1B4F72);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 15px;
+            font-size: 1.5rem;
+        }
+
+        .card-title {
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: #ffffff;
+        }
+
+        .card-value {
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: #2CA58D;
+            margin-bottom: 10px;
+        }
+
+        .card-description {
+            color: rgba(255, 255, 255, 0.7);
+            font-size: 0.9rem;
+        }
+
+        /* Subscription section */
+        .subscription-section {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 15px;
+            padding: 30px;
+            margin-bottom: 30px;
+        }
+
+        .subscription-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 25px;
+        }
+
+        .subscription-title {
+            font-size: 1.5rem;
+            font-weight: 700;
+        }
+
+        .subscription-status {
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            text-transform: uppercase;
+        }
+
+        .status-free {
+            background: rgba(149, 165, 166, 0.2);
+            color: #95a5a6;
+        }
+
+        .status-active {
+            background: rgba(46, 204, 113, 0.2);
+            color: #2ecc71;
+        }
+
+        .status-pending {
+            background: rgba(241, 196, 15, 0.2);
+            color: #f1c40f;
+        }
+
+        .plans-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 20px;
+        }
+
+        .plan-card {
+            background: rgba(255, 255, 255, 0.05);
+            border: 2px solid rgba(255, 255, 255, 0.1);
+            border-radius: 15px;
+            padding: 25px;
+            text-align: center;
+            transition: all 0.3s ease;
+            position: relative;
+        }
+
+        .plan-card:hover {
+            border-color: #2CA58D;
+            transform: translateY(-5px);
+        }
+
+        .plan-card.current {
+            border-color: #2CA58D;
+            background: rgba(44, 165, 141, 0.1);
+        }
+
+        .plan-badge {
+            position: absolute;
+            top: -10px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: #2CA58D;
+            color: #ffffff;
+            padding: 5px 15px;
+            border-radius: 15px;
+            font-size: 0.8rem;
+            font-weight: 600;
+        }
+
+        .plan-name {
+            font-size: 1.3rem;
+            font-weight: 700;
+            margin-bottom: 10px;
+        }
+
+        .plan-price {
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: #2CA58D;
+            margin-bottom: 5px;
+        }
+
+        .plan-period {
+            color: rgba(255, 255, 255, 0.7);
+            font-size: 0.9rem;
+            margin-bottom: 20px;
+        }
+
+        .plan-features {
+            list-style: none;
+            margin-bottom: 25px;
+        }
+
+        .plan-features li {
+            padding: 8px 0;
+            color: rgba(255, 255, 255, 0.8);
+            font-size: 0.9rem;
+        }
+
+        .plan-features li i {
+            color: #2CA58D;
+            margin-right: 8px;
+        }
+
+        .plan-btn {
+            width: 100%;
+            padding: 12px;
+            background: linear-gradient(135deg, #2CA58D, #1B4F72);
+            border: none;
+            border-radius: 8px;
+            color: #ffffff;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .plan-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(44, 165, 141, 0.4);
+        }
+
+        .plan-btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
+
+        /* Devices section */
+        .devices-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .add-device-btn {
+            background: linear-gradient(135deg, #2CA58D, #1B4F72);
+            border: none;
+            color: #ffffff;
+            padding: 12px 20px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+
+        .add-device-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(44, 165, 141, 0.4);
+        }
+
+        .devices-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+            gap: 20px;
+        }
+
+        .device-card {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 15px;
+            padding: 20px;
+            transition: transform 0.3s ease;
+        }
+
+        .device-card:hover {
+            transform: translateY(-3px);
+        }
+
+        .device-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+
+        .device-name {
+            font-size: 1.1rem;
+            font-weight: 600;
+        }
+
+        .device-status {
+            padding: 4px 12px;
+            border-radius: 15px;
+            font-size: 0.8rem;
+            font-weight: 600;
+        }
+
+        .status-online {
+            background: rgba(46, 204, 113, 0.2);
+            color: #2ecc71;
+        }
+
+        .status-offline {
+            background: rgba(149, 165, 166, 0.2);
+            color: #95a5a6;
+        }
+
+        .status-compromised {
+            background: rgba(231, 76, 60, 0.2);
+            color: #e74c3c;
+        }
+
+        .device-info {
+            margin-bottom: 15px;
+        }
+
+        .device-info p {
+            color: rgba(255, 255, 255, 0.7);
+            font-size: 0.9rem;
+            margin: 5px 0;
+        }
+
+        .device-actions {
+            display: flex;
+            gap: 10px;
+        }
+
+        .device-btn {
+            flex: 1;
+            padding: 8px 12px;
+            border: none;
+            border-radius: 6px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .btn-scan {
+            background: linear-gradient(135deg, #3498db, #2980b9);
+            color: #ffffff;
+        }
+
+        .btn-scan:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 3px 10px rgba(52, 152, 219, 0.4);
+        }
+
+        .btn-delete {
+            background: linear-gradient(135deg, #e74c3c, #c0392b);
+            color: #ffffff;
+        }
+
+        .btn-delete:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 3px 10px rgba(231, 76, 60, 0.4);
+        }
+
+        /* Modal styles */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 2000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            backdrop-filter: blur(5px);
+        }
+
+        .modal-content {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 20px;
+            margin: 5% auto;
+            padding: 30px;
+            width: 90%;
+            max-width: 500px;
+        }
+
+        .close {
+            color: #aaa;
+            float: right;
+            font-size: 28px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        .close:hover {
+            color: #2CA58D;
+        }
+
+        .modal h2 {
+            color: #ffffff;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-label {
+            display: block;
+            color: #ffffff;
+            font-weight: 600;
+            margin-bottom: 8px;
+            font-size: 0.9rem;
+        }
+
+        .form-input, .form-select {
+            width: 100%;
+            padding: 12px 15px;
+            background: rgba(255, 255, 255, 0.1);
+            border: 2px solid rgba(255, 255, 255, 0.2);
+            border-radius: 8px;
+            color: #ffffff;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+        }
+
+        .form-input:focus, .form-select:focus {
+            outline: none;
+            border-color: #2CA58D;
+            background: rgba(255, 255, 255, 0.15);
+        }
+
+        .form-input::placeholder {
+            color: rgba(255, 255, 255, 0.6);
+        }
+
+        .form-select option {
+            background: #1B4F72;
+            color: #ffffff;
+        }
+
+        /* Alert styles */
+        .alert {
+            padding: 12px 16px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            font-size: 0.9rem;
+            display: none;
+        }
+
+        .alert-error {
+            background: rgba(231, 76, 60, 0.2);
+            border: 1px solid rgba(231, 76, 60, 0.3);
+            color: #ff6b6b;
+        }
+
+        .alert-success {
+            background: rgba(46, 204, 113, 0.2);
+            border: 1px solid rgba(46, 204, 113, 0.3);
+            color: #2ecc71;
+        }
+
+        .alert-info {
+            background: rgba(52, 152, 219, 0.2);
+            border: 1px solid rgba(52, 152, 219, 0.3);
+            color: #3498db;
+        }
+
+        /* Loading spinner */
+        .loading-spinner {
+            display: none;
+            width: 20px;
+            height: 20px;
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            border-radius: 50%;
+            border-top-color: #ffffff;
+            animation: spin 1s ease-in-out infinite;
+            margin: 20px auto;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        /* Responsive design */
+        @media (max-width: 768px) {
+            .sidebar {
+                transform: translateX(-280px);
+            }
+
+            .main-content {
+                margin-left: 0;
+            }
+
+            .dashboard-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .plans-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .devices-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .header {
+                flex-direction: column;
+                gap: 15px;
+                text-align: center;
+            }
+
+            .devices-header {
+                flex-direction: column;
+                gap: 15px;
+                align-items: stretch;
+            }
+        }
+
+        /* Empty state */
+        .empty-state {
+            text-align: center;
+            padding: 60px 20px;
+            color: rgba(255, 255, 255, 0.7);
+        }
+
+        .empty-state i {
+            font-size: 4rem;
+            color: rgba(255, 255, 255, 0.3);
+            margin-bottom: 20px;
+        }
+
+        .empty-state h3 {
+            font-size: 1.5rem;
+            margin-bottom: 10px;
+            color: #ffffff;
+        }
+
+        .empty-state p {
+            font-size: 1rem;
+            margin-bottom: 25px;
+        }
+    </style>
+</head>
+<body>
+    <!-- Sidebar -->
+    <div class="sidebar" id="sidebar">
+        <div class="logo-section">
+            <img src="YallaHacklogo.png" alt="Yalla-Hack Logo">
+            <div class="logo-text">Yalla-Hack Shield</div>
+        </div>
+
+        <ul class="nav-menu">
+            <li class="nav-item">
+                <a class="nav-link active" data-section="dashboard">
+                    <i class="fas fa-tachometer-alt"></i>
+                    Dashboard
+                </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" data-section="subscription">
+                    <i class="fas fa-credit-card"></i>
+                    Subscription
+                </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" data-section="devices">
+                    <i class="fas fa-laptop"></i>
+                    Devices
+                </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" data-section="security">
+                    <i class="fas fa-shield-alt"></i>
+                    Security Events
+                </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" data-section="reports">
+                    <i class="fas fa-chart-bar"></i>
+                    Reports
+                </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" data-section="settings">
+                    <i class="fas fa-cog"></i>
+                    Settings
+                </a>
+            </li>
+            <li class="nav-item" id="adminNavItem" style="display: none;">
+                <a class="nav-link" data-section="admin">
+                    <i class="fas fa-user-shield"></i>
+                    Admin Panel
+                </a>
+            </li>
+        </ul>
+
+        <div class="user-info" id="userInfo">
+            <h4>Loading...</h4>
+            <p>Please wait...</p>
+        </div>
+    </div>
+
+    <!-- Main Content -->
+    <div class="main-content" id="mainContent">
+        <!-- Header -->
+        <div class="header">
+            <div class="header-left">
+                <h1 class="header-title" id="headerTitle">Dashboard</h1>
+                <p class="header-subtitle" id="headerSubtitle">Welcome to your cybersecurity command center</p>
+            </div>
+            <div class="header-right">
+                <button class="menu-toggle" id="menuToggle">
+                    <i class="fas fa-bars"></i>
+                </button>
+                <button class="logout-btn" onclick="logout()">
+                    <i class="fas fa-sign-out-alt"></i> Logout
+                </button>
+            </div>
+        </div>
+
+        <!-- Alert -->
+        <div id="alert" class="alert"></div>
+
+        <!-- Dashboard Section -->
+        <div class="content-section active" id="dashboard-section">
+            <div class="dashboard-grid">
+                <div class="dashboard-card">
+                    <div class="card-header">
+                        <div class="card-icon">
+                            <i class="fas fa-laptop"></i>
+                        </div>
+                        <div class="card-title">Total Devices</div>
+                    </div>
+                    <div class="card-value" id="totalDevices">0</div>
+                    <div class="card-description">Devices under protection</div>
+                </div>
+
+                <div class="dashboard-card">
+                    <div class="card-header">
+                        <div class="card-icon">
+                            <i class="fas fa-shield-alt"></i>
+                        </div>
+                        <div class="card-title">Active Threats</div>
+                    </div>
+                    <div class="card-value" id="activeThreats">0</div>
+                    <div class="card-description">Threats detected today</div>
+                </div>
+
+                <div class="dashboard-card">
+                    <div class="card-header">
+                        <div class="card-icon">
+                            <i class="fas fa-check-circle"></i>
+                        </div>
+                        <div class="card-title">Protection Status</div>
+                    </div>
+                    <div class="card-value" id="protectionStatus">Active</div>
+                    <div class="card-description">Real-time monitoring enabled</div>
+                </div>
+
+                <div class="dashboard-card">
+                    <div class="card-header">
+                        <div class="card-icon">
+                            <i class="fas fa-clock"></i>
+                        </div>
+                        <div class="card-title">Last Scan</div>
+                    </div>
+                    <div class="card-value" id="lastScan">Never</div>
+                    <div class="card-description">Most recent security scan</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Subscription Section -->
+        <div class="content-section" id="subscription-section">
+            <div class="subscription-section">
+                <div class="subscription-header">
+                    <h2 class="subscription-title">Current Subscription</h2>
+                    <div class="subscription-status" id="subscriptionStatus">Loading...</div>
+                </div>
+
+                <div id="currentSubscriptionInfo">
+                    <div class="loading-spinner"></div>
+                </div>
+
+                <h3 style="margin: 30px 0 20px 0; color: #ffffff;">Available Plans</h3>
+                <div class="plans-grid" id="plansGrid">
+                    <div class="loading-spinner"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Devices Section -->
+        <div class="content-section" id="devices-section">
+            <div class="devices-header">
+                <h2 style="color: #ffffff;">My Devices</h2>
+                <button class="add-device-btn" onclick="openAddDeviceModal()">
+                    <i class="fas fa-plus"></i> Add Device
+                </button>
+            </div>
+
+            <div class="devices-grid" id="devicesGrid">
+                <div class="loading-spinner"></div>
+            </div>
+        </div>
+
+        <!-- Security Events Section -->
+        <div class="content-section" id="security-section">
+            <h2 style="color: #ffffff; margin-bottom: 20px;">Security Events</h2>
+            <div id="securityEventsContainer">
+                <div class="loading-spinner"></div>
+            </div>
+        </div>
+
+        <!-- Reports Section -->
+        <div class="content-section" id="reports-section">
+            <h2 style="color: #ffffff; margin-bottom: 20px;">Security Reports</h2>
+            <div class="empty-state">
+                <i class="fas fa-chart-line"></i>
+                <h3>Reports Coming Soon</h3>
+                <p>Detailed security reports and analytics will be available in the next update.</p>
+            </div>
+        </div>
+
+        <!-- Settings Section -->
+        <div class="content-section" id="settings-section">
+            <h2 style="color: #ffffff; margin-bottom: 20px;">Account Settings</h2>
+            <div class="empty-state">
+                <i class="fas fa-user-cog"></i>
+                <h3>Settings Panel</h3>
+                <p>Account settings and preferences will be available soon.</p>
+            </div>
+        </div>
+
+        <!-- Admin Section -->
+        <div class="content-section" id="admin-section">
+            <h2 style="color: #ffffff; margin-bottom: 20px;">Admin Panel</h2>
+            <div class="empty-state">
+                <i class="fas fa-user-shield"></i>
+                <h3>Admin Dashboard</h3>
+                <p>Administrative controls and system management tools.</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Add Device Modal -->
+    <div id="addDeviceModal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeAddDeviceModal()">&times;</span>
+            <h2><i class="fas fa-laptop"></i> Add New Device</h2>
+            
+            <div id="deviceAlert" class="alert"></div>
+            
+            <form id="addDeviceForm">
+                <div class="form-group">
+                    <label for="deviceName" class="form-label">Device Name</label>
+                    <input type="text" id="deviceName" name="device_name" class="form-input" placeholder="e.g., John's Laptop" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="deviceType" class="form-label">Device Type</label>
+                    <select id="deviceType" name="device_type" class="form-select" required>
+                        <option value="">Select device type</option>
+                        <option value="desktop">Desktop</option>
+                        <option value="laptop">Laptop</option>
+                        <option value="mobile">Mobile</option>
+                        <option value="server">Server</option>
+                        <option value="tablet">Tablet</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label for="operatingSystem" class="form-label">Operating System</label>
+                    <select id="operatingSystem" name="operating_system" class="form-select" required>
+                        <option value="">Select operating system</option>
+                        <option value="Windows 11">Windows 11</option>
+                        <option value="Windows 10">Windows 10</option>
+                        <option value="macOS">macOS</option>
+                        <option value="Ubuntu">Ubuntu</option>
+                        <option value="CentOS">CentOS</option>
+                        <option value="iOS">iOS</option>
+                        <option value="Android">Android</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label for="ipAddress" class="form-label">IP Address (Optional)</label>
+                    <input type="text" id="ipAddress" name="ip_address" class="form-input" placeholder="e.g., 192.168.1.100">
+                </div>
+
+                <div class="form-group">
+                    <label for="macAddress" class="form-label">MAC Address (Optional)</label>
+                    <input type="text" id="macAddress" name="mac_address" class="form-input" placeholder="e.g., 00:1B:44:11:3A:B7">
+                </div>
+
+                <button type="submit" class="plan-btn" id="addDeviceBtn">
+                    <span class="loading-spinner" id="deviceLoadingSpinner"></span>
+                    <span id="addDeviceBtnText">Add Device</span>
+                </button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Payment Modal -->
+    <div id="paymentModal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closePaymentModal()">&times;</span>
+            <h2><i class="fas fa-credit-card"></i> Complete Payment</h2>
+            
+            <div id="paymentAlert" class="alert"></div>
+            
+            <div id="paymentInfo">
+                <p style="color: rgba(255, 255, 255, 0.8); margin-bottom: 20px; text-align: center;">
+                    You will be redirected to PayPal to complete your payment.
+                </p>
+                
+                <div style="background: rgba(44, 165, 141, 0.1); border: 1px solid rgba(44, 165, 141, 0.3); border-radius: 10px; padding: 20px; margin-bottom: 20px;">
+                    <h4 style="color: #2CA58D; margin-bottom: 10px;">Payment Details</h4>
+                    <p style="color: #ffffff; margin: 5px 0;"><strong>Plan:</strong> <span id="paymentPlan"></span></p>
+                    <p style="color: #ffffff; margin: 5px 0;"><strong>Amount:</strong> $<span id="paymentAmount"></span> USD</p>
+                    <p style="color: #ffffff; margin: 5px 0;"><strong>Billing:</strong> <span id="paymentBilling"></span></p>
+                </div>
+
+                <button class="plan-btn" id="proceedPaymentBtn" onclick="proceedToPayPal()">
+                    <i class="fab fa-paypal"></i> Pay with PayPal
+                </button>
+
+                <div style="text-align: center; margin-top: 15px;">
+                    <p style="color: rgba(255, 255, 255, 0.7); font-size: 0.9rem;">
+                        After payment, return here and click "Confirm Payment" to activate your subscription.
+                    </p>
+                    <button class="plan-btn" style="margin-top: 10px; background: linear-gradient(135deg, #27ae60, #2ecc71);" onclick="confirmPayment()">
+                        <i class="fas fa-check"></i> Confirm Payment
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Global variables
+        let currentUser = null;
+        let currentSubscription = null;
+        let devices = [];
+        let isLoading = false;
+        let pendingPayment = null;
+
+        // Initialize the application
+        window.addEventListener('load', async () => {
+            await checkAuthentication();
+            setupEventListeners();
+            await loadDashboardData();
+        });
+
+        // Check if user is authenticated
+        async function checkAuthentication() {
+            try {
+                const result = await makeRequest('/api/auth/session', 'GET');
+                if (!result.authenticated) {
+                    window.location.href = '/';
+                    return;
+                }
+                currentUser = result.user;
+                updateUserInfo();
+                
+                // Show admin nav item if user is admin
+                if (currentUser.is_admin) {
+                    document.getElementById('adminNavItem').style.display = 'block';
+                }
+            } catch (error) {
+                window.location.href = '/';
+            }
+        }
+
+        // Update user info in sidebar
+        function updateUserInfo() {
+            const userInfo = document.getElementById('userInfo');
+            userInfo.innerHTML = `
+                <h4>${currentUser.first_name} ${currentUser.last_name}</h4>
+                <p>${currentUser.email}</p>
+                <p>Plan: ${currentUser.subscription_tier.charAt(0).toUpperCase() + currentUser.subscription_tier.slice(1)}</p>
+            `;
+        }
+
+        // Setup event listeners
+        function setupEventListeners() {
+            // Navigation
+            document.querySelectorAll('.nav-link').forEach(link => {
+                link.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    const section = link.getAttribute('data-section');
+                    switchSection(section);
+                });
+            });
+
+            // Menu toggle
+            document.getElementById('menuToggle').addEventListener('click', toggleSidebar);
+
+            // Close modals when clicking outside
+            window.onclick = function(event) {
+                const addDeviceModal = document.getElementById('addDeviceModal');
+                const paymentModal = document.getElementById('paymentModal');
+                
+                if (event.target === addDeviceModal) {
+                    closeAddDeviceModal();
+                }
+                if (event.target === paymentModal) {
+                    closePaymentModal();
+                }
+            }
+
+            // Add device form
+            document.getElementById('addDeviceForm').addEventListener('submit', handleAddDevice);
+        }
+
+        // API request helper
+        async function makeRequest(url, method, data = null) {
+            const options = {
+                method: method,
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                credentials: 'include'
+            };
+            
+            if (data) {
+                options.body = JSON.stringify(data);
+            }
+            
+            try {
+                const response = await fetch(url, options);
+                const result = await response.json();
+                
+                if (!response.ok) {
+                    throw new Error(result.error || 'An error occurred');
+                }
+                
+                return result;
+            } catch (error) {
+                throw error;
+            }
+        }
+
+        // Alert functions
+        function showAlert(message, type = 'error', alertId = 'alert') {
+            const alert = document.getElementById(alertId);
+            alert.className = `alert alert-${type}`;
+            alert.textContent = message;
+            alert.style.display = 'block';
+            
+            setTimeout(() => {
+                alert.style.display = 'none';
+            }, 5000);
+        }
+
+        function hideAlert(alertId = 'alert') {
+            document.getElementById(alertId).style.display = 'none';
+        }
+
+        // Navigation functions
+        function switchSection(sectionName) {
+            // Update navigation
+            document.querySelectorAll('.nav-link').forEach(link => {
+                link.classList.remove('active');
+            });
+            document.querySelector(`[data-section="${sectionName}"]`).classList.add('active');
+
+            // Update content
+            document.querySelectorAll('.content-section').forEach(section => {
+                section.classList.remove('active');
+            });
+            document.getElementById(`${sectionName}-section`).classList.add('active');
+
+            // Update header
+            const titles = {
+                dashboard: 'Dashboard',
+                subscription: 'Subscription Management',
+                devices: 'Device Management',
+                security: 'Security Events',
+                reports: 'Security Reports',
+                settings: 'Account Settings',
+                admin: 'Admin Panel'
+            };
+
+            const subtitles = {
+                dashboard: 'Welcome to your cybersecurity command center',
+                subscription: 'Manage your subscription and billing',
+                devices: 'Monitor and manage your protected devices',
+                security: 'View and manage security events',
+                reports: 'Analyze your security posture',
+                settings: 'Configure your account preferences',
+                admin: 'System administration and user management'
+            };
+
+            document.getElementById('headerTitle').textContent = titles[sectionName];
+            document.getElementById('headerSubtitle').textContent = subtitles[sectionName];
+
+            // Load section-specific data
+            loadSectionData(sectionName);
+        }
+
+        function toggleSidebar() {
+            const sidebar = document.getElementById('sidebar');
+            const mainContent = document.getElementById('mainContent');
+            
+            sidebar.classList.toggle('collapsed');
+            mainContent.classList.toggle('expanded');
+        }
+
+        // Load section-specific data
+        async function loadSectionData(sectionName) {
+            switch (sectionName) {
+                case 'dashboard':
+                    await loadDashboardData();
+                    break;
+                case 'subscription':
+                    await loadSubscriptionData();
+                    break;
+                case 'devices':
+                    await loadDevicesData();
+                    break;
+                case 'security':
+                    await loadSecurityEvents();
+                    break;
+            }
+        }
+
+        // Load dashboard data
+        async function loadDashboardData() {
+            try {
+                // Load devices summary
+                const devicesResult = await makeRequest('/api/devices/summary', 'GET');
+                const summary = devicesResult.summary;
+
+                document.getElementById('totalDevices').textContent = summary.total_devices;
+                document.getElementById('activeThreats').textContent = summary.compromised_devices;
+                
+                // Update protection status
+                const protectionStatus = summary.online_devices > 0 ? 'Active' : 'Inactive';
+                document.getElementById('protectionStatus').textContent = protectionStatus;
+
+                // Update last scan (simulated)
+                document.getElementById('lastScan').textContent = summary.total_devices > 0 ? 'Today' : 'Never';
+
+            } catch (error) {
+                console.error('Error loading dashboard data:', error);
+            }
+        }
+
+        // Load subscription data
+        async function loadSubscriptionData() {
+            try {
+                // Load current subscription
+                const subscriptionResult = await makeRequest('/api/paypal/current', 'GET');
+                currentSubscription = subscriptionResult.subscription;
+
+                // Update subscription status
+                const statusElement = document.getElementById('subscriptionStatus');
+                statusElement.textContent = currentSubscription.tier.charAt(0).toUpperCase() + currentSubscription.tier.slice(1);
+                statusElement.className = `subscription-status status-${currentSubscription.status === 'active' ? 'active' : currentSubscription.tier === 'free' ? 'free' : 'pending'}`;
+
+                // Load available plans
+                const plansResult = await makeRequest('/api/paypal/plans', 'GET');
+                renderSubscriptionPlans(plansResult.plans);
+
+            } catch (error) {
+                console.error('Error loading subscription data:', error);
+                showAlert('Failed to load subscription data');
+            }
+        }
+
+        // Render subscription plans
+        function renderSubscriptionPlans(plans) {
+            const plansGrid = document.getElementById('plansGrid');
+            plansGrid.innerHTML = '';
+
+            Object.entries(plans).forEach(([planKey, plan]) => {
+                const isCurrentPlan = currentSubscription.tier === planKey;
+                const planCard = document.createElement('div');
+                planCard.className = `plan-card ${isCurrentPlan ? 'current' : ''}`;
+
+                planCard.innerHTML = `
+                    ${isCurrentPlan ? '<div class="plan-badge">Current Plan</div>' : ''}
+                    <h3 class="plan-name">${plan.name}</h3>
+                    <div class="plan-price">$${plan.price}</div>
+                    <div class="plan-period">per ${plan.billing}</div>
+                    <ul class="plan-features">
+                        ${plan.features.map(feature => `<li><i class="fas fa-check"></i> ${feature}</li>`).join('')}
+                    </ul>
+                    <button class="plan-btn" ${isCurrentPlan ? 'disabled' : ''} onclick="selectPlan('${planKey}', '${plan.name}', ${plan.price})">
+                        ${isCurrentPlan ? 'Current Plan' : planKey === 'free' ? 'Downgrade' : 'Upgrade'}
+                    </button>
+                `;
+
+                plansGrid.appendChild(planCard);
+            });
+        }
+
+        // Select subscription plan
+        function selectPlan(planKey, planName, price) {
+            if (planKey === 'free') {
+                // Handle downgrade to free
+                showAlert('Downgrade functionality will be available soon', 'info');
+                return;
+            }
+
+            if (planKey === currentSubscription.tier) {
+                return;
+            }
+
+            // Initiate payment process
+            initiatePayment(planKey, planName, price);
+        }
+
+        // Initiate payment
+        async function initiatePayment(planKey, planName, price, billingCycle = 'monthly') {
+            try {
+                const result = await makeRequest('/api/paypal/initiate-payment', 'POST', {
+                    plan: planKey,
+                    billing_cycle: billingCycle
+                });
+
+                pendingPayment = {
+                    plan: planKey,
+                    planName: planName,
+                    amount: result.amount,
+                    billing_cycle: billingCycle,
+                    paypal_url: result.paypal_url
+                };
+
+                // Show payment modal
+                document.getElementById('paymentPlan').textContent = planName;
+                document.getElementById('paymentAmount').textContent = result.amount;
+                document.getElementById('paymentBilling').textContent = billingCycle;
+                document.getElementById('paymentModal').style.display = 'block';
+
+            } catch (error) {
+                showAlert(error.message);
+            }
+        }
+
+        // Proceed to PayPal
+        function proceedToPayPal() {
+            if (pendingPayment && pendingPayment.paypal_url) {
+                window.open(pendingPayment.paypal_url, '_blank');
+            }
+        }
+
+        // Confirm payment
+        async function confirmPayment() {
+            try {
+                const result = await makeRequest('/api/paypal/confirm-payment', 'POST');
+                showAlert('Subscription activated successfully!', 'success', 'paymentAlert');
+                
+                setTimeout(() => {
+                    closePaymentModal();
+                    loadSubscriptionData();
+                    updateUserInfo();
+                }, 2000);
+
+            } catch (error) {
+                showAlert(error.message, 'error', 'paymentAlert');
+            }
+        }
+
+        // Load devices data
+        async function loadDevicesData() {
+            try {
+                const result = await makeRequest('/api/devices', 'GET');
+                devices = result.devices;
+                renderDevices();
+
+            } catch (error) {
+                console.error('Error loading devices:', error);
+                showAlert('Failed to load devices');
+            }
+        }
+
+        // Render devices
+        function renderDevices() {
+            const devicesGrid = document.getElementById('devicesGrid');
+            
+            if (devices.length === 0) {
+                devicesGrid.innerHTML = `
+                    <div class="empty-state">
+                        <i class="fas fa-laptop"></i>
+                        <h3>No Devices Added</h3>
+                        <p>Add your first device to start monitoring its security.</p>
+                        <button class="add-device-btn" onclick="openAddDeviceModal()">
+                            <i class="fas fa-plus"></i> Add Your First Device
+                        </button>
+                    </div>
+                `;
+                return;
+            }
+
+            devicesGrid.innerHTML = '';
+            devices.forEach(device => {
+                const deviceCard = document.createElement('div');
+                deviceCard.className = 'device-card';
+
+                deviceCard.innerHTML = `
+                    <div class="device-header">
+                        <h3 class="device-name">${device.device_name}</h3>
+                        <span class="device-status status-${device.status}">${device.status.charAt(0).toUpperCase() + device.status.slice(1)}</span>
+                    </div>
+                    <div class="device-info">
+                        <p><i class="fas fa-desktop"></i> ${device.device_type.charAt(0).toUpperCase() + device.device_type.slice(1)}</p>
+                        <p><i class="fas fa-cog"></i> ${device.operating_system}</p>
+                        <p><i class="fas fa-network-wired"></i> ${device.ip_address || 'No IP'}</p>
+                        <p><i class="fas fa-clock"></i> Last seen: ${new Date(device.last_seen).toLocaleDateString()}</p>
+                    </div>
+                    <div class="device-actions">
+                        <button class="device-btn btn-scan" onclick="scanDevice(${device.id})">
+                            <i class="fas fa-search"></i> Scan
+                        </button>
+                        <button class="device-btn btn-delete" onclick="deleteDevice(${device.id})">
+                            <i class="fas fa-trash"></i> Delete
+                        </button>
+                    </div>
+                `;
+
+                devicesGrid.appendChild(deviceCard);
+            });
+        }
+
+        // Device management functions
+        function openAddDeviceModal() {
+            document.getElementById('addDeviceModal').style.display = 'block';
+            hideAlert('deviceAlert');
+        }
+
+        function closeAddDeviceModal() {
+            document.getElementById('addDeviceModal').style.display = 'none';
+            document.getElementById('addDeviceForm').reset();
+            hideAlert('deviceAlert');
+        }
+
+        async function handleAddDevice(e) {
+            e.preventDefault();
+            
+            if (isLoading) return;
+            
+            isLoading = true;
+            const button = document.getElementById('addDeviceBtn');
+            const spinner = document.getElementById('deviceLoadingSpinner');
+            const text = document.getElementById('addDeviceBtnText');
+            
+            button.disabled = true;
+            spinner.style.display = 'inline-block';
+            text.textContent = 'Adding...';
+            
+            hideAlert('deviceAlert');
+            
+            const formData = new FormData(e.target);
+            const deviceData = {
+                device_name: formData.get('device_name'),
+                device_type: formData.get('device_type'),
+                operating_system: formData.get('operating_system'),
+                ip_address: formData.get('ip_address'),
+                mac_address: formData.get('mac_address')
+            };
+            
+            try {
+                const result = await makeRequest('/api/devices', 'POST', deviceData);
+                showAlert('Device added successfully!', 'success', 'deviceAlert');
+                
+                setTimeout(() => {
+                    closeAddDeviceModal();
+                    loadDevicesData();
+                }, 1500);
+                
+            } catch (error) {
+                showAlert(error.message, 'error', 'deviceAlert');
+            } finally {
+                isLoading = false;
+                button.disabled = false;
+                spinner.style.display = 'none';
+                text.textContent = 'Add Device';
+            }
+        }
+
+        async function scanDevice(deviceId) {
+            try {
+                showAlert('Initiating security scan...', 'info');
+                const result = await makeRequest(`/api/devices/${deviceId}/scan`, 'POST');
+                showAlert('Security scan completed successfully!', 'success');
+                
+                // Refresh devices data
+                loadDevicesData();
+                
+            } catch (error) {
+                showAlert(error.message);
+            }
+        }
+
+        async function deleteDevice(deviceId) {
+            if (!confirm('Are you sure you want to delete this device? This action cannot be undone.')) {
+                return;
+            }
+
+            try {
+                await makeRequest(`/api/devices/${deviceId}`, 'DELETE');
+                showAlert('Device deleted successfully!', 'success');
+                loadDevicesData();
+                
+            } catch (error) {
+                showAlert(error.message);
+            }
+        }
+
+        // Load security events
+        async function loadSecurityEvents() {
+            const container = document.getElementById('securityEventsContainer');
+            container.innerHTML = `
+                <div class="empty-state">
+                    <i class="fas fa-shield-alt"></i>
+                    <h3>No Security Events</h3>
+                    <p>No security events have been detected. Your devices are secure!</p>
+                </div>
+            `;
+        }
+
+        // Modal functions
+        function closePaymentModal() {
+            document.getElementById('paymentModal').style.display = 'none';
+            pendingPayment = null;
+            hideAlert('paymentAlert');
+        }
+
+        // Logout function
+        async function logout() {
+            try {
+                await makeRequest('/api/auth/logout', 'POST');
+                window.location.href = '/';
+            } catch (error) {
+                console.error('Logout error:', error);
+                window.location.href = '/';
+            }
+        }
+    </script>
+</body>
+</html>
+
