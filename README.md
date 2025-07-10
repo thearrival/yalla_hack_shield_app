@@ -4,7 +4,9 @@
 
 Yalla-Hack Shield Enhanced is a comprehensive cybersecurity platform designed to provide enterprise-grade endpoint protection, device management, and automated threat detection capabilities. Built with modern web technologies and inspired by industry-leading solutions, this platform offers scalable subscription tiers, automated email notifications, and seamless PayPal integration.
 
-![Yalla-Hack Shield](src/static/YallaHacklogo.png)
+
+![yalla hack - animation](https://github.com/user-attachments/assets/fbd0dad8-6a79-472b-af9b-5c3c1f223776)
+
 
 ## ✨ Key Features
 
