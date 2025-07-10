@@ -57,7 +57,7 @@ Yalla-Hack Shield Enhanced is a comprehensive cybersecurity platform designed to
 
 1. **Clone the repository**
    ```bash
-   git clone <repository-url>
+   git clone thearrival/yalla_hack_shield_app.git
    cd yalla_hack_shield_enhanced
    ```
 
