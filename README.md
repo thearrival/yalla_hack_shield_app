@@ -10,11 +10,7 @@ Yalla-Hack Shield Enhanced is a comprehensive cybersecurity platform designed to
 
 ## ✨ Key Features
 
-### 🔐 Multi-Tier Subscription Model
-- **Free Plan**: 1 device monitoring with basic security scans
-- **Personal Plan ($9.99/month)**: Up to 3 devices with advanced features
-- **Pro Plan ($29.99/month)**: Up to 25 devices with enterprise capabilities
-- **Enterprise Plan ($99.99/month)**: Unlimited devices with full security suite
+
 
 ### 📱 Comprehensive Device Management
 - Real-time device status monitoring (online/offline/compromised)
